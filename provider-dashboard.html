@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Provider Dashboard – Auto Aid</title>
+
+    <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      // ← Replace with your EmailJS User ID (Public Key)
+      emailjs.init('yr9Bk5SfM2G3BN8u2');
+    })();
+  </script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+    /* === Base Reset & Layout === */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      background: #f4f6f8;
+      overflow: hidden;
+    }
+
+    /* === Sidebar (Desktop) === */
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      flex-shrink: 0;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 12px;
+      text-align: left;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+      font-size: 1rem;
+    }
+    .sidebar button:hover {
+      background: #34495e;
+    }
+
+    /* === Main Content === */
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+      font-size: 1.25rem;
+    }
+    .info {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .info label {
+      font-weight: bold;
+      color: #555;
+      width: 100px;
+    }
+    .info span {
+      flex: 1;
+      color: #333;
+    }
+    .request-item {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    .request-item button {
+      margin-top: 8px;
+      padding: 6px 12px;
+      border: none;
+      background: #007bff;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+      font-size: 0.95rem;
+    }
+    .request-item button:hover {
+      background: #005bb5;
+    }
+
+    /* === Tablet & Smaller === */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+        overflow-x: auto;
+      }
+      .sidebar h2 {
+        flex: 1;
+        margin-bottom: 0;
+        font-size: 1.25rem;
+      }
+      .sidebar button {
+        flex: none;
+        margin: 0 6px;
+        padding: 8px 10px;
+        white-space: nowrap;
+        font-size: 0.9rem;
+      }
+      .main {
+        padding: 20px 15px;
+      }
+      .card {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      h3 {
+        font-size: 1.1rem;
+      }
+      .request-item button {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* === Mobile Phones === */
+    @media (max-width: 480px) {
+      .sidebar {
+        padding: 8px;
+      }
+      .sidebar h2 {
+        font-size: 1rem;
+      }
+      .sidebar button {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+      }
+      .main {
+        padding: 15px 10px;
+      }
+      .card {
+        padding: 12px;
+      }
+      h3 {
+        font-size: 1rem;
+      }
+      .request-item button {
+        padding: 4px 8px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Auto Aid</h2>
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('pending')">Pending</button>
+    <button onclick="showSection('live')">Live</button>
+    <button onclick="showSection('history')">Job History</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main">
+    <div id="dashboardSection">
+      <div class="card">
+        <h3>Provider Details</h3>
+        <div class="info"><label>Name:</label><span id="pname">Loading…</span></div>
+        <div class="info"><label>Surname:</label><span id="psurname">Loading…</span></div>
+        <div class="info"><label>ID Number:</label><span id="pidnum">Loading…</span></div>
+        <div class="info"><label>Phone:</label><span id="pphone">Loading…</span></div>
+        <div class="info"><label>Email:</label><span id="pemail">Loading…</span></div>
+      </div>
+    </div>
+
+    <div id="pendingSection" style="display:none;">
+      <div class="card"><h3>Pending Requests</h3><div id="pendingRequests">Loading…</div></div>
+    </div>
+
+    <div id="liveSection" style="display:none;">
+      <div class="card"><h3>Live Requests</h3><div id="liveRequests">Loading…</div></div>
+    </div>
+
+    <div id="historySection" style="display:none;">
+      <div class="card"><h3>Completed Requests</h3><div id="completedRequests">Loading…</div></div>
+      <div class="card"><h3>Rejected Requests</h3><div id="rejectedRequests">Loading…</div></div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Initialize Firebase (unchanged)
+    const config = {
+      apiKey: "AIzaSyCCYcBWUYBiwzjT24xFgGnFKMOJBMUXwqw",
+      authDomain: "auto-aid-2025.firebaseapp.com",
+      projectId: "auto-aid-2025"
+    };
+    firebase.initializeApp(config);
+    const auth = firebase.auth(), db = firebase.firestore();
+
+    // Notification state
+    const knownRequests = {};   // requestId -> paid(bool)
+    let isInitial = true;       // seed knownRequests on first snapshot
+
+    function showSection(id) {
+      ["dashboard","pending","live","history"].forEach(sec => {
+        document.getElementById(sec + "Section").style.display =
+          sec === id ? "block" : "none";
+      });
+    }
+
+    function logout() {
+      auth.signOut().then(() => location = "login.html");
+    }
+
+    function haversineDistance([lat1, lon1], [lat2, lon2]) {
+      const toRad = d => d * Math.PI / 180;
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a = Math.sin(dLat/2)**2 +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function calculateQuote(service, distanceKm, volumeLiters=0) {
+  const table = {
+    "Towing":    { base: 350, km: 14, min: 2.0, avgTime: 30 },
+    "Jump-start":{ base: 100, km: 0,  min: 1.5, avgTime: 15 },
+    "Flat Tire Help": { base: 120, km: 0, min: 1.8, avgTime: 20 },
+    "Emergency Fuel Delivery": { base: 90, km: 8, min: 1.2, avgTime: 25, extraRate: 15, extraQty: volumeLiters },
+    "Emergency Pick-up": { base: 110, km: 9, min: 1.7, avgTime: 20 }
+  };
+  const p = table[service];
+  const extras = p.extraRate ? p.extraRate * p.extraQty : 0;
+  return p.base + (distanceKm * p.km) + (p.avgTime * p.min) + extras;
+}
+
+    function acceptRequest(requestId) {
+      db.collection("requests").doc(requestId).get().then(doc => {
+        const d = doc.data();
+        const [clat, clng] = d.location.split(",").map(Number);
+        navigator.geolocation.getCurrentPosition(pos => {
+          const plat = pos.coords.latitude,
+                plong = pos.coords.longitude;
+          const distanceKm = haversineDistance([plat, plong], [clat, clng]);
+          let volume = 0;
+          if (d.type === "Emergency Fuel Delivery") {
+            volume = parseFloat(prompt("Enter fuel volume in liters:", "10")) || 0;
+          }
+          const Q = calculateQuote(d.type, distanceKm, volume);
+          db.collection("requests").doc(requestId).update({
+            status: "assigned",
+            cost: Q,
+            distanceKm: distanceKm.toFixed(2),
+            volume: volume,
+            paid: false
+          }).then(() => {
+            alert(`Request assigned. Quoted cost: R${Q.toFixed(2)}`);
+          });
+        }, err => {
+          alert("Could not get your location: " + err.message);
+        }, { enableHighAccuracy: true });
+      });
+    }
+
+    function rejectRequest(requestId) {
+      db.collection("requests").doc(requestId).update({ status: "rejected" });
+    }
+
+    function completeRequest(requestId) {
+      db.collection("requests").doc(requestId).update({ status: "awaiting_confirmation" });
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (!user) return location = "login.html";
+
+      // Load provider details (unchanged)...
+      db.collection("users").doc(user.uid).get().then(doc => {
+        const d = doc.data();
+        document.getElementById("pname").textContent    = d.firstName;
+        document.getElementById("psurname").textContent = d.surname;
+        document.getElementById("pidnum").textContent   = d.idNumber;
+        document.getElementById("pphone").textContent   = d.phone;
+        document.getElementById("pemail").textContent   = user.email;
+      });
+
+      // Listen for changes
+      db.collection("requests").where("providerId", "==", user.uid)
+        .onSnapshot(snap => {
+          if (isInitial) {
+            snap.docs.forEach(doc => {
+              knownRequests[doc.id] = !!doc.data().paid;
+            });
+            isInitial = false;
+          } else {
+            snap.docChanges().forEach(change => {
+              const d = change.doc.data();
+              const id = change.doc.id;
+              if (change.type === "added") {
+                alert(`New ${d.type} request received.`);
+                knownRequests[id] = !!d.paid;
+              } else if (change.type === "modified") {
+                const prevPaid = knownRequests[id] || false;
+                const nowPaid  = !!d.paid;
+                if (!prevPaid && nowPaid) {
+                  alert(`Payment received for ${d.type} (Request ID: ${id}).`);
+                }
+                knownRequests[id] = nowPaid;
+              }
+            });
+          }
+
+          const pending = [], live = [], completed = [], rejected = [];
+          snap.docs.forEach(doc => {
+            const d = doc.data();
+            const el = document.createElement("div");
+            el.className = "request-item";
+            el.innerHTML = `
+              <strong>${d.type}</strong><br>
+              Description: ${d.description || "–"}<br>
+              Location: ${d.location || "–"}<br>
+              Status: ${d.status}
+            `;
+            if (d.status === "pending") {
+              const a = document.createElement("button");
+              a.textContent = "Accept"; a.onclick = () => acceptRequest(doc.id);
+              const r = document.createElement("button");
+              r.textContent = "Reject"; r.onclick = () => rejectRequest(doc.id);
+              el.append(a, r);
+              pending.push(el);
+            } else if (d.status === "assigned") {
+              const c = document.createElement("button");
+              c.textContent = "Complete Job"; c.onclick = () => completeRequest(doc.id);
+              el.append(c);
+              live.push(el);
+            } else if (d.status === "completed") {
+              completed.push(el);
+            } else if (d.status === "rejected") {
+              rejected.push(el);
+            }
+          });
+
+          function render(list, id) {
+            const container = document.getElementById(id);
+            container.innerHTML = "";
+            list.forEach(x => container.append(x));
+            if (!list.length) container.textContent = "None";
+          }
+          render(pending,   "pendingRequests");
+          render(live,      "liveRequests");
+          render(completed, "completedRequests");
+          render(rejected,  "rejectedRequests");
+        });
+    });
+  </script>
+</body>
+</html>

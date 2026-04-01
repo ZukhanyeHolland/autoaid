@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoAid — Pricing</title>
+
+  <!-- Bring in the same Google Font as index.html -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet">
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Page-specific styles -->
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background-color: #fdfdfd;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .site-header {
+      background-color: #007bff;
+      padding: 1rem 0;
+    }
+    .navbar .nav-item {
+      color: #fff;
+      margin-right: 1.5rem;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .navbar .nav-item.active {
+      border-bottom: 2px solid #ffc107;
+    }
+    .container {
+      max-width: 960px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .page-title {
+      margin-bottom: 0.5rem;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #007bff;
+    }
+    .lead {
+      margin-bottom: 1rem;
+      color: #555;
+    }
+    .formula-note {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+      color: #333;
+    }
+    .effective-date {
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .pricing-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .pricing-table th,
+    .pricing-table td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    .pricing-table th {
+      background-color: #007bff;
+      color: #fff;
+      font-weight: 600;
+    }
+    .pricing-table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    .pricing-table tr:hover {
+      background-color: #e2e6ea;
+    }
+    .site-footer {
+      background-color: #343a40;
+      color: #ccc;
+      padding: 1.5rem 0;
+      margin-top: 4rem;
+    }
+    .footer-nav {
+      margin-top: 0.5rem;
+    }
+    .footer-link {
+      color: #ccc;
+      text-decoration: none;
+      margin: 0 0.5rem;
+      font-size: 0.9rem;
+    }
+    .footer-link:hover {
+      color: #fff;
+    }
+    .sep {
+      color: #555;
+    }
+    @media (max-width: 480px) {
+  body {
+    font-size: 15px;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: 100%;
+    padding: 1rem 1rem;
+    box-sizing: border-box;
+  }
+
+  .page-title,
+  .lead,
+  .formula-note,
+  .example,
+  .effective-date {
+    text-align: left;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1rem;
+  }
+
+  .nav-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .pricing-table {
+    width: 100%;
+    font-size: 0.95rem;
+    border-collapse: collapse;
+  }
+
+  .pricing-table th,
+  .pricing-table td {
+    padding: 0.6rem 0.5rem;
+    word-wrap: break-word;
+  }
+
+  .site-footer {
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 1rem;
+  }
+
+  .footer-link {
+    display: inline-block;
+    margin: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  button,
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .request-item {
+    font-size: 0.95rem;
+    padding: 0.9rem;
+    margin-bottom: 1rem;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- Shared Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="pricing.html" class="nav-item active">Pricing</a>
+        <a href="contact.html" class="nav-item">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="site-main">
+  <div class="container">
+    <h1 class="page-title">Our Pricing</h1>
+
+    <p class="lead">All fees are in South African Rand (ZAR).</p>
+    <p class="formula-note">
+      <strong>Formula:</strong>
+      Base Fee + (Distance × Per KM Rate) + (Estimated Time × Rate per Minute) + Any Extras (if applicable)
+    </p>
+
+    <p class="example">
+      <strong>Example (Towing, 10 km):</strong><br>
+      Base Fee: R350<br>
+      Distance Fee: 10 × R14 = R140<br>
+      Time Fee: 30 × R2.00 = R60<br>
+      <strong>Total: R550</strong>
+    </p>
+
+    <p class="effective-date"><em>Prices effective as of July 7, 2025.</em></p>
+
+    <div class="table-responsive">
+      <table class="pricing-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Base Fee</th>
+            <th>Per KM</th>
+            <th>Per Minute</th>
+            <th>Extras</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Towing</td>
+            <td>R350</td>
+            <td>R14</td>
+            <td>R2.00</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>Jump-start</td>
+            <td>R100</td>
+            <td>R0</td>
+            <td>R1.50</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>Flat Tire Help</td>
+            <td>R120</td>
+            <td>R0</td>
+            <td>R1.80</td>
+            <td>–</td>
+          </tr>
+          <tr>
+            <td>Emergency Fuel Delivery</td>
+            <td>R90</td>
+            <td>R8</td>
+            <td>R1.20</td>
+            <td>R15 × litres</td>
+          </tr>
+          <tr>
+            <td>Emergency Pick-up</td>
+            <td>R110</td>
+            <td>R9</td>
+            <td>R1.70</td>
+            <td>–</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>

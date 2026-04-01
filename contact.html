@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AutoAid — Contact Us</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    body { font-family: 'Open Sans', sans-serif; background-color: #fdfdfd; color: #333; margin: 0; padding: 0; }
+    .site-header { background-color: #007bff; padding: 1rem 0; }
+    .navbar .nav-item { color: #fff; margin-right: 1.5rem; text-decoration: none; font-weight: 600; }
+    .navbar .nav-item.active { border-bottom: 2px solid #ffc107; }
+    .container { max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+    .page-title { margin-bottom: 1rem; font-size: 2rem; font-weight: 600; color: #007bff; }
+    form { background: #fff; padding: 2rem; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.05); }
+    form label { font-weight: 600; display: block; margin-bottom: 0.5rem; }
+    form input, form textarea {
+      width: 100%; padding: 0.75rem; margin-bottom: 1rem;
+      border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;
+    }
+    form button {
+      background-color: #007bff; color: white; border: none;
+      padding: 0.75rem 1.5rem; font-size: 1rem;
+      border-radius: 4px; cursor: pointer;
+    }
+    form button:hover { background-color: #0056b3; }
+    .support-note { margin-top: 2rem; color: #555; font-size: 0.95rem; }
+    .site-footer { background: #343a40; color: #ccc; padding: 1.5rem 0; margin-top: 4rem; }
+    .footer-nav { margin-top: 0.5rem; }
+    .footer-link { color: #ccc; text-decoration: none; margin: 0 0.5rem; font-size: 0.9rem; }
+    .footer-link:hover { color: #fff; }
+    .sep { color: #555; }
+
+    .contact-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+.contact-list li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+.contact-list a {
+  color: #007bff;
+  text-decoration: none;
+}
+.contact-list a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 480px) {
+  body {
+    font-size: 15px;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    overflow-x: hidden;
+  }
+
+  .container {
+    width: 100%;
+    padding: 1rem 1rem;
+    box-sizing: border-box;
+  }
+
+  .page-title,
+  .lead,
+  .formula-note,
+  .example,
+  .effective-date {
+    text-align: left;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1rem;
+  }
+
+  .nav-item {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .pricing-table {
+    width: 100%;
+    font-size: 0.95rem;
+    border-collapse: collapse;
+  }
+
+  .pricing-table th,
+  .pricing-table td {
+    padding: 0.6rem 0.5rem;
+    word-wrap: break-word;
+  }
+
+  .site-footer {
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 1rem;
+  }
+
+  .footer-link {
+    display: inline-block;
+    margin: 0.3rem 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  button,
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    box-sizing: border-box;
+  }
+
+  .request-item {
+    font-size: 0.95rem;
+    padding: 0.9rem;
+    margin-bottom: 1rem;
+    background: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="nav-item">Home</a>
+        
+        <a href="pricing.html" class="nav-item">Pricing</a>
+        <a href="terms.html" class="nav-item">Terms</a>
+        <a href="privacy.html" class="nav-item">Privacy</a>
+        <a href="contact.html" class="nav-item active">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="site-main">
+    <div class="container">
+      <h1 class="page-title">Contact Us</h1>
+
+      <form action="mailto:autoaidatroadsideassistance@gmail.com" method="POST" enctype="text/plain">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="email">Your Email</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="message">Your Message</label>
+        <textarea id="message" name="message" rows="5" required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+      <p class="support-note">
+  You can also reach us directly at:
+</p>
+
+<ul class="contact-list">
+  <li><strong>Email:</strong> <a href="mailto:autoaidatroadsideassistance@gmail.com">autoaidatroadsideassistance@gmail.com</a></li>
+  <li><strong>Phone:</strong> <a href="tel:+27680543953">+27 68 054 3953</a></li>
+  <li><strong>WhatsApp:</strong> <a href="https://wa.me/27680543953" target="_blank">Chat with us</a></li>
+  <li><strong>Instagram:</strong> <a href="https://instagram.com/autoaid_sa" target="_blank">@autoaid_sa</a></li>
+</ul>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2025 AutoAid. All rights reserved.</p>
+      <nav class="footer-nav">
+        <a href="terms.html" class="footer-link">Terms &amp; Conditions</a>
+        <span class="sep">|</span>
+        <a href="privacy.html" class="footer-link">Privacy Policy</a>
+        <span class="sep">|</span>
+        <a href="pricing.html" class="footer-link">Pricing</a>
+        <span class="sep">|</span>
+        <a href="contact.html" class="footer-link">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+</body>
+</html>

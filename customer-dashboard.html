@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Customer Dashboard – Auto Aid</title>
+
+    <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      // ← Replace with your EmailJS User ID (Public Key)
+      emailjs.init('yr9Bk5SfM2G3BN8u2');
+    })();
+  </script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <style>
+
+    
+    /* Base reset & layout */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      display: flex;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      background: #f4f6f8;
+      overflow: hidden;
+    }
+
+    /* Sidebar (desktop) */
+    .sidebar {
+      width: 220px;
+      background: #2c3e50;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      flex-shrink: 0;
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: #fff;
+      padding: 12px;
+      text-align: left;
+      margin-bottom: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+      font-size: 1rem;
+    }
+    .sidebar button:hover {
+      background: #34495e;
+    }
+
+    /* Main content area */
+    .main {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    /* Cards & typography */
+    .card {
+      background: #fff;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+      font-size: 1.25rem;
+    }
+    .info {
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .info label {
+      font-weight: bold;
+      color: #555;
+      width: 100px;
+    }
+    .info span {
+      flex: 1;
+      color: #333;
+    }
+    .request-item, .service-item {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+    select, input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+    }
+    button.submit, .service-item button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background .2s;
+      font-size: 1rem;
+    }
+    button.submit:hover, .service-item button:hover {
+      background: #005bb5;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        padding: 10px;
+        overflow-x: auto;
+      }
+      .sidebar h2 {
+        flex: 1;
+        margin-bottom: 0;
+        font-size: 1.25rem;
+      }
+      .sidebar button {
+        flex: none;
+        margin: 0 6px;
+        padding: 8px 10px;
+        white-space: nowrap;
+        font-size: 0.9rem;
+      }
+      .main {
+        padding: 20px 15px;
+      }
+      .card {
+        padding: 15px;
+        margin-bottom: 15px;
+      }
+      h3 {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        padding: 8px;
+      }
+      .sidebar h2 {
+        font-size: 1rem;
+      }
+      .sidebar button {
+        padding: 6px 8px;
+        font-size: 0.85rem;
+      }
+      .main {
+        padding: 15px 10px;
+      }
+      .card {
+        padding: 12px;
+      }
+      h3 {
+        font-size: 1rem;
+      }
+      select, input, textarea {
+        font-size: 0.9rem;
+      }
+      button.submit, .service-item button {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <h2>Auto Aid</h2>
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('requests')">Requests</button>
+    <button onclick="showSection('services')">Service Selection</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="main">
+    <div id="dashboardSection">
+      <div class="card">
+        <h3>Customer Details</h3>
+        <div class="info"><label>Name:</label><span id="cName">Loading…</span></div>
+        <div class="info"><label>Surname:</label><span id="cSurname">Loading…</span></div>
+        <div class="info"><label>ID Number:</label><span id="cID">Loading…</span></div>
+        <div class="info"><label>Phone:</label><span id="cPhone">Loading…</span></div>
+        <div class="info"><label>Email:</label><span id="cEmail">Loading…</span></div>
+      </div>
+    </div>
+
+    <div id="requestsSection" style="display:none;">
+      <div class="card"><h3>Pending Requests</h3><div id="pendingReq">Loading…</div></div>
+      <div class="card"><h3>Live Requests</h3><div id="liveReq">Loading…</div></div>
+      <div class="card"><h3>Past Requests</h3><div id="pastReq">Loading…</div></div>
+    </div>
+
+    <div id="servicesSection" style="display:none;">
+      <div class="card">
+        <h3>Select a Service</h3>
+        <div class="service-item">
+          <label for="serviceType">Service:</label>
+          <select id="serviceType">
+            <option>Towing</option>
+            <option>Jump-start</option>
+            <option>Flat Tire Help</option>
+            <option>Emergency Fuel Delivery</option>
+            <option>Emergency Pick-up</option>
+          </select>
+        </div>
+        <div class="service-item">
+          <label for="problemDescription">Problem Description:</label>
+          <textarea id="problemDescription" rows="4" placeholder="Describe the problem…"></textarea>
+        </div>
+        <div class="service-item">
+          <label for="location">Your Location:</label>
+          <input type="text" id="location" placeholder="Enter your current location"/>
+        </div>
+        <button class="submit" onclick="submitServiceRequest()">Submit Request</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const config = {
+      apiKey: "AIzaSyCCYcBWUYBiwzjT24xFgGnFKMOJBMUXwqw",
+      authDomain: "auto-aid-2025.firebaseapp.com",
+      projectId: "auto-aid-2025"
+    };
+    firebase.initializeApp(config);
+    const auth = firebase.auth(), db = firebase.firestore();
+    let currentUser;
+
+    const SERVICE_PROVIDERS = {
+      "Towing":                "autoaidtowing101@gmail.com",
+      "Jump-start":            "autoaidtowing101@gmail.com",
+      "Flat Tire Help":        "autoaidtowing101@gmail.com",
+      "Emergency Fuel Delivery":"autoaidtowing101@gmail.com",
+      "Emergency Pick-up":     "autoaidtowing101@gmail.com"
+    };
+const SERVICE_TEMPLATES = {
+  "Towing":                  "template_provider",
+  "Jump-start":              "template_provider",
+  "Flat Tire Help":          "template_provider",
+  "Emergency Fuel Delivery": "template_provider",
+  "Emergency Pick-up":       "template_provider"
+};
+
+    function showSection(id){
+      ["dashboard","requests","services"].forEach(sec => {
+        document.getElementById(sec + "Section").style.display =
+          sec === id ? "block" : "none";
+      });
+    }
+
+    function logout(){
+      auth.signOut().then(() => location = "login.html");
+    }
+
+    auth.onAuthStateChanged(user => {
+      if (!user) return location = "login.html";
+      currentUser = user;
+
+      // Load profile
+      db.collection("users").doc(user.uid).get().then(doc => {
+        const d = doc.data();
+        document.getElementById("cName").textContent   = d.firstName;
+        document.getElementById("cSurname").textContent = d.surname;
+        document.getElementById("cID").textContent      = d.idNumber;
+        document.getElementById("cPhone").textContent   = d.phone;
+        document.getElementById("cEmail").textContent   = user.email;
+      });
+
+      // Listen to requests
+      db.collection("requests").where("customerId","==",user.uid)
+        .onSnapshot(snap => {
+          const pend = [], live = [], past = [];
+
+          snap.forEach(doc => {
+            const d = doc.data();
+
+            // Handle awaiting_confirmation
+            if (d.status === "awaiting_confirmation") {
+              const el = document.createElement("div");
+              el.className = "request-item";
+              el.innerHTML = `
+                <strong>${d.type}</strong><br>
+                Description: ${d.description}<br>
+                Location: ${d.location}<br>
+                <em>Waiting for your confirmation</em><br>
+              `;
+              const btn = document.createElement("button");
+              btn.textContent = "Confirm Completion";
+              btn.onclick = () => db.collection("requests").doc(doc.id).update({
+                status: "completed"
+              });
+              el.appendChild(btn);
+              live.push(el);
+              return;
+            }
+
+            const el = document.createElement("div");
+            el.className = "request-item";
+            el.innerHTML = `
+              <strong>${d.type}</strong><br>
+              Description: ${d.description}<br>
+              Location: ${d.location}<br>
+              Status: ${d.status}
+            `;
+            if (d.status === "pending") pend.push(el);
+            else if (d.status === "assigned") live.push(el);
+            else past.push(el);
+          });
+
+      
+          const render = (list, id) => {
+            const c = document.getElementById(id);
+            c.innerHTML = "";
+            list.forEach(x => c.appendChild(x));
+            if (!list.length) c.textContent = "None";
+          };
+          render(pend, "pendingReq");
+          render(live, "liveReq");
+          render(past, "pastReq");
+
+          // Redirect to payment if needed
+          snap.forEach(doc => {
+            const d = doc.data();
+            if (d.status === 'assigned' && typeof d.cost === 'number' && d.paid === false) {
+              if (!sessionStorage.getItem('redirected_' + doc.id)) {
+                sessionStorage.setItem('redirected_' + doc.id, '1');
+                window.location = `payment.html?requestId=${doc.id}`;
+              }
+            }
+          });
+        });
+
+      // Geolocation helper only if #location exists
+      const locInput = document.getElementById("location");
+      if (locInput) {
+        const useLocBtn = document.createElement("button");
+        useLocBtn.textContent = "Use My Location";
+        useLocBtn.type = "button";
+        useLocBtn.style.marginLeft = "8px";
+        locInput.parentNode.insertBefore(useLocBtn, locInput.nextSibling);
+
+        useLocBtn.addEventListener("click", () => {
+          if (!navigator.geolocation) {
+            return alert("Geolocation not supported by your browser.");
+          }
+          useLocBtn.disabled = true;
+          useLocBtn.textContent = "Locating…";
+          navigator.geolocation.getCurrentPosition(
+            pos => {
+              const { latitude, longitude } = pos.coords;
+              locInput.value = `${latitude.toFixed(6)},${longitude.toFixed(6)}`;
+              useLocBtn.textContent = "Use My Location";
+              useLocBtn.disabled = false;
+            },
+            err => {
+              alert("Failed to get location: " + err.message);
+              useLocBtn.textContent = "Use My Location";
+              useLocBtn.disabled = false;
+            }
+          );
+        });
+      }
+    });
+
+    async function submitServiceRequest() {
+      const type        = document.getElementById("serviceType").value;
+      const description = document.getElementById("problemDescription").value.trim();
+      const location    = document.getElementById("location").value.trim();
+
+      if (!description || !location) {
+        return alert("Please fill in both description and location.");
+      }
+
+      const providerEmail = SERVICE_PROVIDERS[type];
+      let providerId = null;
+
+      if (providerEmail) {
+        const q = await db.collection("users")
+                          .where("email", "==", providerEmail)
+                          .get();
+        if (!q.empty) {
+          providerId = q.docs[0].id;
+        } else {
+          return alert(`No provider found for ${type}.`);
+        }
+      }
+
+      const payload = {
+        customerId: currentUser.uid,
+        type,
+        description,
+        location,
+        status: "pending",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (providerId) payload.providerId = providerId;
+
+      try {
+        await db.collection("requests").add(payload);
+
+      // 1) Fetch customer profile
+const userDoc = await db.collection("users").doc(currentUser.uid).get();
+const userData = userDoc.data();
+
+// 2) Now send the email with extra customer fields
+const templateId = SERVICE_TEMPLATES[type];
+emailjs.send(
+  'service_hopo6bh',
+  templateId,
+  {
+    to_email:        providerEmail,
+    service_type:    type,
+    description:     description,
+    location:        location,
+    // ← new fields:
+    customer_name:    userData.name,
+    customer_surname: userData.surname,
+    customer_id:      userData.idNumber,
+    customer_phone:   userData.phone
+  }
+)
+.then(() => console.log(`Email sent with customer details using ${templateId}`))
+.catch(err => console.error("EmailJS error:", err));
+
+// ──────────────── CUSTOMER CONFIRMATION EMAIL ────────────────
+// Replace 'template_customer' with your actual EmailJS template ID
+emailjs.send(
+  'service_hopo6bh',
+  'template_customer',
+  {
+    to_email:      userData.email,    // customer’s email
+    service_type:  type,
+    description:   description,
+    location:      location,
+    // any extra fields your template requires, e.g.:
+    customer_name: userData.name
+  }
+)
+.then(() => console.log('Customer confirmation email sent'))
+.catch(err => console.error('EmailJS error (customer):', err));
+// ───────────────────────────────────────────────────────────────
+
+
+  // 4) Existing UI feedback
+  alert(`${type} request sent. Awaiting provider response.`);
+  showSection("requests");
+} catch (e) {
+  console.error(e);
+  alert("Failed to send request.");
+}
+    }
+  </script>
+</body>
+</html>

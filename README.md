@@ -18,5 +18,13 @@ Tech Stack
 Live Demo
 Coming soon
 
+Screenshots
+
+-Homepage (homepage.jpg)
+
+-Dashboard (dashboard.jpg)
+
+-Request Page (request-page.jpg)
+
 Author
 Zukhanye Holland

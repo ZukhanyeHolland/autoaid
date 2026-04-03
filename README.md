@@ -20,11 +20,11 @@ Coming soon
 
 Screenshots
 
--Homepage (homepage.jpg)
+## Screenshots
 
--Dashboard (dashboard.jpg)
-
--Request Page (request-page.jpg)
+![Homepage](homepage.jpg)
+![Dashboard](Dashboard.jpg)
+![Request Page](Request-page.jpg)
 
 Author
 Zukhanye Holland

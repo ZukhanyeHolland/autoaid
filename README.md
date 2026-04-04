@@ -15,8 +15,8 @@ Tech Stack
 - JavaScript
 - Firebase
 
-Live Demo
-Coming soon
+Live Demo:
+https://zukhanyeholland.github.io/autoaid/
 
 Screenshots
 
